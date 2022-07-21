@@ -1,5 +1,5 @@
-export interface CategoryModel {
-  id?: number | null;
-  name?: string;
-  description?: string;
+export class CategoryModel {
+  public id?: number | null;
+  public name?: string;
+  public description?: string;
 }
