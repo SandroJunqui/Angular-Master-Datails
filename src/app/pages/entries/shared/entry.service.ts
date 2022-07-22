@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { EntryModule } from './entry.module';
+import { EntryModel } from './entryModel';
 import { map, catchError} from 'rxjs/operators';
 
 @Injectable({
@@ -13,14 +13,14 @@ export class EntryService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<EntryModule[]> {
+  getAll(): Observable<EntryModel[]> {
     return this.http.get(this.apiPath).pipe(
       catchError(this.handlerError),
       map(this.jsonDataToEntries)  // retorno da api
     )
   }
 
-  getById(id: number): Observable<EntryModule> {
+  getById(id: number): Observable<EntryModel> {
     const url = `${this.apiPath}/${id}`;
     return this.http.get(url).pipe(
       catchError(this.handlerError),
@@ -28,14 +28,14 @@ export class EntryService {
     )
   }
 
-  create(entry: EntryModule): Observable<EntryModule> {
+  create(entry: EntryModel): Observable<EntryModel> {
     return this.http.post(this.apiPath, entry).pipe(
       catchError(this.handlerError),
       map(this.jsonDataToEntry)
     )
   }
 
-  update(entry: EntryModule): Observable<EntryModule> {
+  update(entry: EntryModel): Observable<EntryModel> {
     const url = `${this.apiPath}/${entry.id}`;
 
     return this.http.put(url, entry).pipe(
@@ -55,14 +55,17 @@ export class EntryService {
 
   // PRIVATE METODOS
 
-  private jsonDataToEntries(jsonData: any[]): EntryModule[] {
-    const entries: EntryModule[] = [];
-    jsonData.forEach(Element => entries.push(Element as EntryModule));
+  private jsonDataToEntries(jsonData: any[]): EntryModel[] {  // retorno em json do bd
+    const entries: EntryModel[] = [];
+    jsonData.forEach(element => {
+      const entry = Object.assign(new EntryModel(), element); // para poder usar o metodo da model
+      entries.push(entry);
+    });
     return entries;
   }
 
-  private jsonDataToEntry(jsonData: any): EntryModule {
-    return jsonData as EntryModule;
+  private jsonDataToEntry(jsonData: any): EntryModel {
+    return  Object.assign(new EntryModel(), jsonData);
   }
 
   private handlerError(error: any): Observable<any>{

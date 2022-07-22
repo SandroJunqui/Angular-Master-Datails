@@ -1,6 +1,6 @@
 import { CategoryModel } from "../../categories/shared/categoryModel";
 
-export class EntryModule {
+export class EntryModel {
   constructor(
   public id?: number,
   public name?: string,
